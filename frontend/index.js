@@ -1,5 +1,5 @@
 import { initializeBlock } from '@airtable/blocks/ui';
 import React from 'react';
-import AutoCleanApp from './AutoUpdateApp';
+import AutoUpdateApp from './AutoUpdateApp';
 
-initializeBlock(() => <AutoCleanApp />);
+initializeBlock(() => <AutoUpdateApp />);
