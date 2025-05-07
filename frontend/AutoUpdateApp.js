@@ -24,24 +24,42 @@ function AutoCleanApp() {
     const [isDragging, setIsDragging] = useState(false);
     const inputRef = useRef();
 
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer.files?.length > 0) handleFiles(e.dataTransfer.files);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    useEffect(() => {
+        window.addEventListener('dragover', handleDragOver);
+        window.addEventListener('drop', handleDrop);
+        window.addEventListener('dragleave', handleDragLeave);
+        return () => {
+            window.removeEventListener('dragover', handleDragOver);
+            window.removeEventListener('drop', handleDrop);
+            window.removeEventListener('dragleave', handleDragLeave);
+        };
+    }, []);
+
     const tablePicker = (
         <Box marginBottom={3}>
             <Text fontWeight="bold">Target Table:</Text>
             <TablePickerSynced globalConfigKey="targetTable" />
         </Box>
     );
-
-    if (!table) {
-        return (
-            <Box padding={3}>
-                <Text fontWeight="bold" marginBottom={2}>
-                    Upload CSV to Auto-Clean for: {base.name}
-                </Text>
-                {tablePicker}
-                <Text color="red" marginTop={2}>⚠️ No table selected.</Text>
-            </Box>
-        );
-    }
 
     if (table.name.trim() !== "Enrollsy Import") {
         return (
@@ -180,95 +198,84 @@ function AutoCleanApp() {
     alert(`✅ Imported ${rowsToImport.length} rows into "${table.name}"`);
     };
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-        if (e.dataTransfer.files?.length > 0) handleFiles(e.dataTransfer.files);
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-    };
-
     const resetUpload = () => {
         setCsvData([]);
         setFilename('');
         inputRef.current.value = '';
     };
 
-    useEffect(() => {
-        window.addEventListener('dragover', handleDragOver);
-        window.addEventListener('drop', handleDrop);
-        window.addEventListener('dragleave', handleDragLeave);
-        return () => {
-            window.removeEventListener('dragover', handleDragOver);
-            window.removeEventListener('drop', handleDrop);
-            window.removeEventListener('dragleave', handleDragLeave);
-        };
-    }, []);
-
     return (
         <Box padding={3}>
             <Text fontWeight="bold" marginBottom={2}>
                 Upload CSV to Auto-Clean for: {base.name}
             </Text>
-
+    
             {tablePicker}
-
-            <Box
-                height="300px"
-                border="thick"
-                borderStyle="dashed"
-                borderColor={isDragging ? 'blue' : 'lightGray'}
-                backgroundColor={isDragging ? '#e3f2fd' : 'white'}
-                borderRadius={6}
-                padding={4}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                textAlign="center"
-                cursor="pointer"
-                onClick={() => inputRef.current?.click()}
-            >
-                <Text>
-                    {isDragging
-                        ? '📥 Drop your CSV file here!'
-                        : '📂 Drag & drop your CSV here, or click to browse'}
+    
+            {!table ? (
+                <Text color="red" marginTop={2}>
+                    ⚠️ No table selected.
                 </Text>
-            </Box>
-
-            <input
-                ref={inputRef}
-                type="file"
-                accept=".csv"
-                style={{ display: 'none' }}
-                onChange={(e) => handleFiles(e.target.files)}
-            />
-
-            {filename && (
-                <Box marginTop={3}>
-                    <Text>📎 Loaded: {filename} ({csvData.length} rows)</Text>
-                    <Box marginTop={2} display="flex" gap={2}>
-                        <Button variant="primary" onClick={handleStartImport} marginRight={3}>
-                            Start Import
-                        </Button>
-                        <Button variant="danger" onClick={resetUpload}>
-                            Remove File
-                        </Button>
+            ) : table.name.trim() !== "Enrollsy Import" ? (
+                <Text color="red" marginTop={2}>
+                    ⚠️ Please select the "Enrollsy Import" table to continue.
+                </Text>
+            ) : (
+                <>
+                    <Box
+                        height="300px"
+                        border="thick"
+                        borderStyle="dashed"
+                        borderColor={isDragging ? 'blue' : 'lightGray'}
+                        backgroundColor={isDragging ? '#e3f2fd' : 'white'}
+                        borderRadius={6}
+                        padding={4}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        textAlign="center"
+                        cursor="pointer"
+                        onClick={() => inputRef.current?.click()}
+                    >
+                        <Text>
+                            {isDragging
+                                ? '📥 Drop your CSV file here!'
+                                : '📂 Drag & drop your CSV here, or click to browse'}
+                        </Text>
                     </Box>
-                </Box>
+    
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        accept=".csv"
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleFiles(e.target.files)}
+                    />
+    
+                    {filename && (
+                        <Box marginTop={3}>
+                            <Text>
+                                📎 Loaded: {filename} ({csvData.length} rows)
+                            </Text>
+                            <Box marginTop={2} display="flex" gap={2}>
+                                <Button
+                                    variant="primary"
+                                    onClick={handleStartImport}
+                                    marginRight={3}
+                                >
+                                    Start Import
+                                </Button>
+                                <Button variant="danger" onClick={resetUpload}>
+                                    Remove File
+                                </Button>
+                            </Box>
+                        </Box>
+                    )}
+                </>
             )}
         </Box>
     );
+    
 }
 
 export default AutoCleanApp;
