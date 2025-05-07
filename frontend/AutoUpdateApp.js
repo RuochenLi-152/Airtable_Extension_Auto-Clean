@@ -22,6 +22,7 @@ function AutoCleanApp() {
     const [csvData, setCsvData] = useState([]);
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
+    const [missingStudent, setMissingStudent] = useState(null);
     const inputRef = useRef();
 
     const handleDrop = (e) => {
@@ -111,9 +112,6 @@ function AutoCleanApp() {
         const studentTable = base.getTableByNameIfExists('Student Basic Info');
 
         const rowsToImport = csvData.filter(row => {
-            // if (row['Student'] === 'Student' || row['Enrolled'] === 'Enrolled') {
-            //     return false;
-            // }
             const parsed = parseCustomDate(row['Enrolled']);
             return parsed && (!latestEnrolled || parsed > latestEnrolled);
         });
@@ -125,6 +123,7 @@ function AutoCleanApp() {
         const exists = await studentExists(first, last, studentTable);
 
         if (!exists) {
+            setMissingStudent({ first, last });
             alert(`⚠️ Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
             return;
         }
@@ -222,8 +221,42 @@ function AutoCleanApp() {
                 </Text>
             ) : (
                 <>
+                {missingStudent && (
+                    <Box marginBottom={3} backgroundColor="#fff3cd" padding={3} borderRadius={4} border="thick" borderColor="yellow">
+                        <Text color="orange" fontWeight="bold">
+                            ⚠️ Student "{missingStudent.first} {missingStudent.last}" not found in the database.
+                        </Text>
+                        <Text>
+                            Please create a record for this student before importing.
+                        </Text>
+                        <Box marginTop={2}>
+                            <a
+                                href={formUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    backgroundColor: '#ffc107',
+                                    color: 'black',
+                                    padding: '8px 12px',
+                                    textDecoration: 'none',
+                                    borderRadius: '4px',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                ➕ Open Student Form
+                            </a>
+                        </Box>
+                        <Button
+                            variant="primary"
+                            marginTop={3}
+                            onClick={() => setMissingStudent(null)}
+                        >
+                            Done
+                        </Button>
+                    </Box>
+                )}
                     <Box
-                        height="300px"
+                        height="200px"
                         border="thick"
                         borderStyle="dashed"
                         borderColor={isDragging ? 'blue' : 'lightGray'}
