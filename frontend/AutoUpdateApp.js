@@ -205,8 +205,8 @@ function AutoUpdateApp() {
 
     return (
         <Box padding={3}>
-            <Text fontWeight="bold" marginBottom={2}>
-                Upload CSV to Auto-Clean for: {base.name}
+            <Text fontWeight="bold" marginBottom={4}>
+                Upload Enrollsy .csv file below to auto update student records! 
             </Text>
     
             {tablePicker}
