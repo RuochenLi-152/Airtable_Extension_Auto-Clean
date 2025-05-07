@@ -12,7 +12,7 @@ import { formatRowForAirtable } from './helpers/formatRow';
 import { parseCustomDate, getLatestEnrolledTimeFromFirstRow, getWeekNumberFromDate, extractDateAndDay} from './helpers/dateUtils';
 import { splitFullName, studentExists, extractWeekFromClass, findParticipantRecordId } from './helpers/studentUtils';
 
-function AutoCleanApp() {
+function AutoUpdateApp() {
     const base = useBase();
     const globalConfig = useGlobalConfig();
     const selectedTableId = globalConfig.get("targetTable");
@@ -62,7 +62,7 @@ function AutoCleanApp() {
         </Box>
     );
 
-    if (table.name.trim() !== "Enrollsy Import") {
+    if (table && table.name.trim() !== "Enrollsy Import") {
         return (
             <Box padding={3}>
                 <Text fontWeight="bold" marginBottom={2}>
@@ -311,4 +311,4 @@ function AutoCleanApp() {
     
 }
 
-export default AutoCleanApp;
+export default AutoUpdateApp;
