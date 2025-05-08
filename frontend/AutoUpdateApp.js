@@ -169,6 +169,7 @@ function AutoUpdateApp({onNavigate}) {
                 'Week#': { name: weekOption.name },
                 'Link to All Par with Weeks': [{ id: participantId }],
             });
+            
         //  Step 3.1, if it's extended care, update the record for that specific day
         } else if (classText.includes('Extended Care')) {
             const { first, last } = splitFullName(row['Student']);

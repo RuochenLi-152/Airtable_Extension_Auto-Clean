@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Text, Button, Input } from '@airtable/blocks/ui';
+import { Box, Text, Button, useBase } from '@airtable/blocks/ui';
 import Papa from 'papaparse';
 import { FileDropZone, ImportActions } from './components/UIChunks';
+import { splitFullName, studentExists } from './helpers/studentUtils';
+import { parseDOB } from './helpers/dateUtils';
 
 function StudentUploadPage({ onNavigate }) {
+    const base = useBase();
+
     const [csvData, setCsvData] = useState([]);
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
@@ -51,10 +55,18 @@ function StudentUploadPage({ onNavigate }) {
             header: true,
             skipEmptyLines: true,
             complete: function (results) {
-                setCsvData(results.data);
-                console.log("📥 Loaded student CSV:", results.data);
+                const validRows = results.data.filter(
+                    row =>
+                        row['Student'] &&
+                        row['Student'] !== 'Student' &&
+                        row['Birth Date'] !== 'Birth Date'
+                );
+        
+                setCsvData(validRows);
+                console.log("📥 Loaded student CSV:", validRows);
             },
         });
+        
     };
 
     const resetUpload = () => {
@@ -64,9 +76,62 @@ function StudentUploadPage({ onNavigate }) {
     };
 
     const handleUpload = async () => {
-        alert(`✅ Loaded ${csvData.length} student rows.`);
-        // TODO: process each student row (e.g., add to Airtable)
+        const studentTable = base.getTableByNameIfExists("Student Basic Info");
+        const airtableFields = studentTable.fields;
+    
+        const addedStudents = [];
+    
+        for (let row of csvData) {
+
+            if (!row['Student']) continue;
+            // if (row['Student'] === 'Student') {
+            //     continue;
+            // }
+            // Use your existing helper to split the student full name
+            const { first, last } = splitFullName(row['Student']);
+    
+            const exists = await studentExists(first, last, studentTable);
+            if (exists) continue;
+    
+            // Convert age string like "7y 2m 17d" → 7
+            let age = null;
+            if (row['Age']) {
+                const match = row['Age'].match(/^(\d+)y/);
+                age = match ? parseInt(match[1]) : null;
+            }
+    
+            // Prepare the formatted record
+            const newRecord = {
+                'Participant First Name': first,
+                'Participant Last Name': last,
+                'Date of Birth': parseDOB(row['Birth Date']),
+                'Age': age,
+    
+                'Parent 1 - First Name': row['Acct First Name'] || '',
+                'Parent 1 - Last Name': row['Acct Last Name'] || '',
+                'Parent 1 - Email Address': row['Email'] || '',
+                'Phone Number (Parent 1)': row['Acct Cell'] || '',
+    
+                'Parent 2 - First Name': row['Acct First Name 2'] || '',
+                'Parent 2 - Last Name': row['Acct Last Name 2'] || '',
+                'Parent 2 - Email Address': row['Email 2'] || '',
+                'Phone Number (Parent 2)': row['Acct Cell 2'] || ''
+            };
+    
+            await studentTable.createRecordAsync(newRecord);
+            addedStudents.push(`${first} ${last}`);
+        }
+    
+        if (addedStudents.length > 0) {
+            alert(`✅ Added ${addedStudents.length} student(s):\n- ${addedStudents.join('\n- ')}`);
+        } else {
+            alert("✅ No new students needed to be added — all exist.");
+        }
+    
+        setCsvData([]);
+        setFilename('');
     };
+    
 
     return (
         <Box padding={3}>
