@@ -13,7 +13,7 @@ import { parseCustomDate, getLatestEnrolledTimeFromFirstRow, getWeekNumberFromDa
 import { splitFullName, studentExists, extractWeekFromClass, findParticipantRecordId } from './helpers/studentUtils';
 import { MissingStudentBanner, FileDropZone, ImportActions} from './components/UIChunks'
 
-function AutoUpdateApp() {
+function AutoUpdateApp({onNavigate}) {
     const base = useBase();
     const globalConfig = useGlobalConfig();
     const selectedTableId = globalConfig.get("targetTable");
@@ -204,11 +204,19 @@ function AutoUpdateApp() {
         inputRef.current.value = '';
     };
 
+    
+
     return (
         <Box padding={3}>
+
+            <Button onClick={() => onNavigate('home')} marginBottom={3}>
+                 ← Back
+            </Button>
+
             <Text fontWeight="bold" marginBottom={4}>
                 Upload Enrollsy .csv file below to auto update student records! 
             </Text>
+
     
             {tablePicker}
     
@@ -227,6 +235,7 @@ function AutoUpdateApp() {
                             student={missingStudent}
                             formUrl={formUrl}
                             onClose={() => setMissingStudent(null)}
+                            onNavigate={onNavigate}
                         />
                     )}
 
@@ -253,6 +262,7 @@ function AutoUpdateApp() {
                     )}
                 </>
             )}
+
         </Box>
     );
     

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Box, Text, Button } from '@airtable/blocks/ui';
 
-export function MissingStudentBanner({ student, onClose, formUrl }) {
+export function MissingStudentBanner({ student, onClose, formUrl, onNavigate }) {
     return (
         <Box marginBottom={3} backgroundColor="#fff3cd" padding={3} borderRadius={4} border="thick" borderColor="yellow">
             <Text color="orange" fontWeight="bold">
@@ -27,6 +27,14 @@ export function MissingStudentBanner({ student, onClose, formUrl }) {
                     ➕ Open Student Form
                 </a>
             </Box>
+            
+            <Button
+                    variant="secondary"
+                    onClick={() => onNavigate && onNavigate('add-student')}
+                >
+                    ➕ Add via Upload
+                </Button>
+
             <Button variant="primary" marginTop={3} onClick={onClose}>
                 Done
             </Button>

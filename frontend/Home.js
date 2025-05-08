@@ -12,14 +12,14 @@ export function Home({ onNavigate }) {
                 marginBottom={3}
                 onClick={() => onNavigate('auto-update')}
             >
-                Update Roster
+                Update Schedule
             </Button>
             <Button
                 variant="default"
                 size="large"
-                onClick={() => onNavigate('other')}
+                onClick={() => onNavigate('add-student')}
             >
-                Create New student
+                Add Students (does nothing for now)
             </Button>
         </Box>
     );
