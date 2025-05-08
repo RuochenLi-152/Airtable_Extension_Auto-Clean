@@ -11,6 +11,7 @@ import Papa from 'papaparse';
 import { formatRowForAirtable } from './helpers/formatRow';
 import { parseCustomDate, getLatestEnrolledTimeFromFirstRow, getWeekNumberFromDate, extractDateAndDay} from './helpers/dateUtils';
 import { splitFullName, studentExists, extractWeekFromClass, findParticipantRecordId } from './helpers/studentUtils';
+import { MissingStudentBanner, FileDropZone, ImportActions} from './components/UIChunks'
 
 function AutoUpdateApp() {
     const base = useBase();
@@ -221,61 +222,18 @@ function AutoUpdateApp() {
                 </Text>
             ) : (
                 <>
-                {missingStudent && (
-                    <Box marginBottom={3} backgroundColor="#fff3cd" padding={3} borderRadius={4} border="thick" borderColor="yellow">
-                        <Text color="orange" fontWeight="bold">
-                            ⚠️ Student "{missingStudent.first} {missingStudent.last}" not found in the database.
-                        </Text>
-                        <Text>
-                            Please create a record for this student before importing.
-                        </Text>
-                        <Box marginTop={2}>
-                            <a
-                                href={formUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                    backgroundColor: '#ffc107',
-                                    color: 'black',
-                                    padding: '8px 12px',
-                                    textDecoration: 'none',
-                                    borderRadius: '4px',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                ➕ Open Student Form
-                            </a>
-                        </Box>
-                        <Button
-                            variant="primary"
-                            marginTop={3}
-                            onClick={() => setMissingStudent(null)}
-                        >
-                            Done
-                        </Button>
-                    </Box>
-                )}
-                    <Box
-                        height="200px"
-                        border="thick"
-                        borderStyle="dashed"
-                        borderColor={isDragging ? 'blue' : 'lightGray'}
-                        backgroundColor={isDragging ? '#e3f2fd' : 'white'}
-                        borderRadius={6}
-                        padding={4}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        textAlign="center"
-                        cursor="pointer"
+                    {missingStudent && (
+                        <MissingStudentBanner
+                            student={missingStudent}
+                            formUrl={formUrl}
+                            onClose={() => setMissingStudent(null)}
+                        />
+                    )}
+
+                    <FileDropZone
+                        isDragging={isDragging}
                         onClick={() => inputRef.current?.click()}
-                    >
-                        <Text>
-                            {isDragging
-                                ? '📥 Drop your CSV file here!'
-                                : '📂 Drag & drop your CSV here, or click to browse'}
-                        </Text>
-                    </Box>
+                    />
     
                     <input
                         ref={inputRef}
@@ -286,23 +244,12 @@ function AutoUpdateApp() {
                     />
     
                     {filename && (
-                        <Box marginTop={3}>
-                            <Text>
-                                📎 Loaded: {filename} ({csvData.length} rows)
-                            </Text>
-                            <Box marginTop={2} display="flex" gap={2}>
-                                <Button
-                                    variant="primary"
-                                    onClick={handleStartImport}
-                                    marginRight={3}
-                                >
-                                    Start Import
-                                </Button>
-                                <Button variant="danger" onClick={resetUpload}>
-                                    Remove File
-                                </Button>
-                            </Box>
-                        </Box>
+                        <ImportActions
+                            filename={filename}
+                            rowCount={csvData.length}
+                            onImport={handleStartImport}
+                            onReset={resetUpload}
+                        />
                     )}
                 </>
             )}

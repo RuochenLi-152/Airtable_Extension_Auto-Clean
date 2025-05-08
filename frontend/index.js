@@ -1,5 +1,17 @@
 import { initializeBlock } from '@airtable/blocks/ui';
-import React from 'react';
 import AutoUpdateApp from './AutoUpdateApp';
+import {Home} from './Home';
+import React, { useState } from 'react';
 
-initializeBlock(() => <AutoUpdateApp />);
+
+function App() {
+    const [view, setView] = useState('home');
+
+    if (view === 'auto-update') {
+        return <AutoUpdateApp onBack={() => setView('home')} />;
+    }
+
+    return <Home onNavigate={setView} />;
+}
+
+initializeBlock(() => <App />);
