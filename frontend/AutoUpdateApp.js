@@ -24,6 +24,8 @@ function AutoUpdateApp({onNavigate}) {
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [missingStudent, setMissingStudent] = useState(null);
+    const [checkBeforeAdd, setCheckBeforeAdd] = useState(false);
+
     const inputRef = useRef();
 
     const handleDrop = (e) => {
@@ -164,6 +166,19 @@ function AutoUpdateApp({onNavigate}) {
                     continue;
                 }
 
+                // Check if entry already exists
+                const exists = checkBeforeAdd && [...participantsWithWeeks.records].some(
+                    r =>
+                        r.getCellValue("First Name")?.trim() === first &&
+                        r.getCellValue("Last Name")?.trim() === last &&
+                        r.getCellValue("Week#")?.name === weekName
+                );
+
+                if (exists) {
+                    console.log(`Core Time already exists for ${first} ${last} in ${weekName}`);
+                    continue;
+                }
+
                 await weekTable.createRecordAsync({
                     'First Name': first,
                     'Last Name': last,
@@ -245,6 +260,19 @@ function AutoUpdateApp({onNavigate}) {
                             onNavigate={onNavigate}
                         />
                     )}
+
+                    <Box marginBottom={3}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={checkBeforeAdd}
+                                onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
+                                style={{ marginRight: '8px' }}
+                            />
+                            Check & Update Weeks - Slower
+                        </label>
+                    </Box>
+
 
                     <FileDropZone
                         isDragging={isDragging}
