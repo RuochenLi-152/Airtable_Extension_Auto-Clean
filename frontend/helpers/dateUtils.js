@@ -25,7 +25,10 @@ export async function getLatestEnrolledTimeFromFirstRow(table) {
     const query = await table.selectRecordsAsync({ fields: ['Enrolled'] });
     const firstRecord = query.records[0];
 
-    if (!firstRecord) return null;
+    if (!firstRecord){
+        const earliest = new Date(1970, 0, 1);
+        return earliest;
+    }
 
     const enrolledText = firstRecord.getCellValueAsString('Enrolled');
     return parseCustomDate(enrolledText);
