@@ -19,7 +19,7 @@ export function Home({ onNavigate }) {
                 size="large"
                 onClick={() => onNavigate('add-student')}
             >
-                Add Students (does nothing for now)
+                Add Students
             </Button>
         </Box>
     );
