@@ -25,6 +25,8 @@ function AutoUpdateApp({onNavigate}) {
     const [isDragging, setIsDragging] = useState(false);
     const [missingStudent, setMissingStudent] = useState(null);
     const [checkBeforeAdd, setCheckBeforeAdd] = useState(false);
+    const [addedRecordsSummary, setAddedRecordsSummary] = useState([]);
+
 
     const inputRef = useRef();
 
@@ -113,6 +115,7 @@ function AutoUpdateApp({onNavigate}) {
         const airtableFields = table.fields;
         const latestEnrolled = await getLatestEnrolledTimeFromFirstRow(table);
         const studentTable = base.getTableByNameIfExists('Student Basic Info');
+        const summaryList = [];
 
         const rowsToImport = csvData.filter(row => {
             const parsed = parseCustomDate(row['Enrolled']);
@@ -185,6 +188,14 @@ function AutoUpdateApp({onNavigate}) {
                     'Week#': { name: weekOption.name },
                     'Link to All Par with Weeks': [{ id: participantId }],
                 });
+
+                summaryList.push({
+                    first,
+                    last,
+                    weeks: [weekOption.name],
+                    extended: false
+                });
+                
             }
         }
 
@@ -215,9 +226,22 @@ function AutoUpdateApp({onNavigate}) {
             await weekTable.updateRecordAsync(match.id, {
                 [dayOfWeek]: { name: "8:30-6:00" }
             });
-        }
 
-    alert(`✅ Imported ${rowsToImport.length} rows into "${table.name}"`);
+            const existing = summaryList.find(s => s.first === first && s.last === last);
+            if (existing) {
+                existing.extended = true;
+            } else {
+                summaryList.push({
+                    first,
+                    last,
+                    weeks: [],
+                    extended: true
+                });
+            }
+
+        }
+        setAddedRecordsSummary(summaryList);
+        alert(`✅ Imported ${rowsToImport.length} rows into "${table.name}"`);
     };
 
     const resetUpload = () => {
@@ -286,6 +310,7 @@ function AutoUpdateApp({onNavigate}) {
                         style={{ display: 'none' }}
                         onChange={(e) => handleFiles(e.target.files)}
                     />
+
     
                     {filename && (
                         <ImportActions
@@ -294,6 +319,21 @@ function AutoUpdateApp({onNavigate}) {
                             onImport={handleStartImport}
                             onReset={resetUpload}
                         />
+                    )}
+                    
+                    {addedRecordsSummary.length > 0 && (
+                        <Box marginTop={3} padding={3} border="default" backgroundColor="#f8f9fa">
+                            <Text fontWeight="bold">Import Summary:</Text>
+                            {addedRecordsSummary.map((record, index) => (
+                                <Box key={index} marginTop={1}>
+                                    <Text>
+                                        ✅ {record.first} {record.last}
+                                        {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
+                                        {record.extended && ` (Extended Care added)`}
+                                    </Text>
+                                </Box>
+                            ))}
+                        </Box>
                     )}
                 </>
             )}

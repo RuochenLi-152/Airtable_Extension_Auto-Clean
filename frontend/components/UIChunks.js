@@ -73,7 +73,11 @@ export function ImportActions({ filename, rowCount, onImport, onReset }) {
         <Box marginTop={3}>
             <Text>📎 Loaded: {filename} ({rowCount} rows)</Text>
             <Box marginTop={2} display="flex" gap={2}>
-                <Button variant="primary" onClick={onImport} marginRight={3}>
+                <Button variant="primary"     
+                onClick={async () => {
+                    await onImport();
+                    onReset();
+                }} marginRight={3}>
                     Start Import
                 </Button>
                 <Button variant="danger" onClick={onReset}>
@@ -83,4 +87,3 @@ export function ImportActions({ filename, rowCount, onImport, onReset }) {
         </Box>
     );
 }
-
