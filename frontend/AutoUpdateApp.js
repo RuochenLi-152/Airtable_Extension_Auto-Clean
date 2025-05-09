@@ -117,85 +117,91 @@ function AutoUpdateApp({onNavigate}) {
             return parsed && (!latestEnrolled || parsed > latestEnrolled);
         });
 
-    // Step 1: Check that all students exist before inserting anything
-    for (let row of rowsToImport) {
-        const { first, last } = splitFullName(row['Student']);
-
-        const exists = await studentExists(first, last, studentTable);
-
-        if (!exists) {
-            setMissingStudent({ first, last });
-            alert(`⚠️ Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
-            return;
-        }
-    }
-
-    // Step 2: If all pass, proceed with import
-    for (let row of rowsToImport) {
-        const formatted = formatRowForAirtable(row, airtableFields);
-        await table.createRecordAsync(formatted);
-    }
-
-    //Step 3: Update to the Participants with Weeks(all) table
-    const weekTable = base.getTableByNameIfExists('Participants by week(All)');
-    const weekField = weekTable.getField('Week#');
-    const weekOptions = weekField.options.choices;
-    const participantTable = base.getTableByNameIfExists('All Participants with Weeks');
-    const participantsWithWeeks = await weekTable.selectRecordsAsync();
-    
-
-    for (let row of rowsToImport) {
-        const classText = row['Class'] || '';
-        const weekName = extractWeekFromClass(classText);
-
-        if (weekName && classText.includes('Core Time')) {
+        // Step 1: Check that all students exist before inserting anything
+        for (let row of rowsToImport) {
             const { first, last } = splitFullName(row['Student']);
-            const weekOption = weekOptions.find(opt => opt.name === weekName);
 
-            if (!weekOption) {
-                console.warn(`⚠️ Week choice "${weekName}" not found in Week# field`);
-                continue;
+            const exists = await studentExists(first, last, studentTable);
+
+            if (!exists) {
+                setMissingStudent({ first, last });
+                alert(`⚠️ Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
+                return;
             }
+        }
 
-            const participantId = await findParticipantRecordId(first, last, participantTable);
-            if (!participantId) {
-                console.warn(`❌ No matching participant for ${first} ${last}`);
-                continue; // skip creating if link target is missing
+        // Step 2: If all pass, proceed with import
+        for (let row of rowsToImport) {
+            const formatted = formatRowForAirtable(row, airtableFields);
+            await table.createRecordAsync(formatted);
+        }
+
+        //Step 3: Update to the Participants with Weeks(all) table
+        const weekTable = base.getTableByNameIfExists('Participants by week(All)');
+        const weekField = weekTable.getField('Week#');
+        const weekOptions = weekField.options.choices;
+        const participantTable = base.getTableByNameIfExists('All Participants with Weeks');
+        const participantsWithWeeks = await weekTable.selectRecordsAsync();
+        
+
+        // First pass: Handle all "Core Time" rows
+        for (let row of rowsToImport) {
+            const classText = row['Class'] || '';
+            const weekName = extractWeekFromClass(classText);
+
+            if (weekName && classText.includes('Core Time')) {
+                const { first, last } = splitFullName(row['Student']);
+                const weekOption = weekOptions.find(opt => opt.name === weekName);
+
+                if (!weekOption) {
+                    console.warn(`⚠️ Week choice "${weekName}" not found in Week# field`);
+                    continue;
+                }
+
+                const participantId = await findParticipantRecordId(first, last, participantTable);
+                if (!participantId) {
+                    console.warn(`❌ No matching participant for ${first} ${last}`);
+                    continue;
+                }
+
+                await weekTable.createRecordAsync({
+                    'First Name': first,
+                    'Last Name': last,
+                    'Week#': { name: weekOption.name },
+                    'Link to All Par with Weeks': [{ id: participantId }],
+                });
             }
+        }
 
-            await weekTable.createRecordAsync({
-                'First Name': first,
-                'Last Name': last,
-                'Week#': { name: weekOption.name },
-                'Link to All Par with Weeks': [{ id: participantId }],
-            });
-            
-        //  Step 3.1, if it's extended care, update the record for that specific day
-        } else if (classText.includes('Extended Care')) {
+        // Second pass: Handle all "Extended Care" updates
+        for (let row of rowsToImport) {
+            const classText = row['Class'] || '';
+            if (!classText.includes('Extended Care')) continue;
+
             const { first, last } = splitFullName(row['Student']);
             const extracted = extractDateAndDay(classText);
             if (!extracted) continue;
-    
+
             const { dayOfWeek, dateStr } = extracted;
             const weekNum = getWeekNumberFromDate(dateStr);
             const weekLabel = `Week ${weekNum}`;
-    
+
             const match = [...participantsWithWeeks.records].find(r =>
                 r.getCellValue("First Name")?.trim() === first &&
                 r.getCellValue("Last Name")?.trim() === last &&
                 r.getCellValue("Week#")?.name === weekLabel
             );
-    
+
             if (!match) {
                 console.warn(`⚠️ No matching participant record for ${first} ${last} in ${weekLabel}`);
                 continue;
             }
-    
+
             await weekTable.updateRecordAsync(match.id, {
                 [dayOfWeek]: { name: "8:30-6:00" }
             });
         }
-    }
+
     alert(`✅ Imported ${rowsToImport.length} rows into "${table.name}"`);
     };
 
