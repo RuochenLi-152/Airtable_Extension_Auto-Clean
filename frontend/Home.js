@@ -21,13 +21,13 @@ export function Home({ onNavigate }) {
                 Add Students
             </Button>
 
-            <Button
+            {/* <Button
                 variant="default"
                 size="large"
                 onClick={() => onNavigate('allergy-upload')}
             >
                 Upload Allergy Info
-            </Button>
+            </Button> */}
         </Box>
     );
 }

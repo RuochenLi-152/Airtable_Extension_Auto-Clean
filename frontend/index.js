@@ -15,9 +15,9 @@ function App() {
     if (view === 'add-student') {
         return <StudentUploadPage onNavigate={setView} />;
     }
-    if (view === 'allergy-upload') {
-        return <AllergyUploadPage onNavigate={setView} />;
-    }
+    // if (view === 'allergy-upload') {
+    //     return <AllergyUploadPage onNavigate={setView} />;
+    // }
 
     return <Home onNavigate={setView} />;
 }
