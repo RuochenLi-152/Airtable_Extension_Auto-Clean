@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Button, Text } from '@airtable/blocks/ui';
-import AutoUpdateApp from './AutoUpdateApp'; // your existing main UI
 
 export function Home({ onNavigate }) {
     return (
@@ -20,6 +19,14 @@ export function Home({ onNavigate }) {
                 onClick={() => onNavigate('add-student')}
             >
                 Add Students
+            </Button>
+
+            <Button
+                variant="default"
+                size="large"
+                onClick={() => onNavigate('allergy-upload')}
+            >
+                Upload Allergy Info
             </Button>
         </Box>
     );
