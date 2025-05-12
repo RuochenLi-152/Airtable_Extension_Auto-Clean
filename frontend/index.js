@@ -1,6 +1,7 @@
 import { initializeBlock } from '@airtable/blocks/ui';
 import AutoUpdateApp from './AutoUpdateApp';
 import StudentUploadPage from './StudentUploadPage';
+import AllergyUploadPage from './AllergyUploadPage';
 import {Home} from './Home';
 import React, { useState } from 'react';
 
