@@ -84,9 +84,6 @@ function StudentUploadPage({ onNavigate }) {
         for (let row of csvData) {
 
             if (!row['Student']) continue;
-            // if (row['Student'] === 'Student') {
-            //     continue;
-            // }
             // Use your existing helper to split the student full name
             const { first, last } = splitFullName(row['Student']);
     
@@ -115,7 +112,8 @@ function StudentUploadPage({ onNavigate }) {
                 'Parent 2 - First Name': row['Acct First Name 2'] || '',
                 'Parent 2 - Last Name': row['Acct Last Name 2'] || '',
                 'Parent 2 - Email Address': row['Email 2'] || '',
-                'Phone Number (Parent 2)': row['Acct Cell 2'] || ''
+                'Phone Number (Parent 2)': row['Acct Cell 2'] || '',
+                'How did you find out about Aozora Community?': row['How did you find out about Aozora Community?']
             };
     
             await studentTable.createRecordAsync(newRecord);
