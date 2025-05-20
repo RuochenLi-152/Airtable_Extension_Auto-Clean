@@ -58,6 +58,7 @@ export function FileDropZone({ isDragging, onClick }) {
             textAlign="center"
             cursor="pointer"
             onClick={onClick}
+            marginBottom={4}
         >
             <Text>
                 {isDragging

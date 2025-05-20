@@ -60,24 +60,6 @@ function AutoUpdateApp({onNavigate}) {
         };
     }, []);
 
-    const tablePicker = (
-        <Box marginBottom={3}>
-            <Text fontWeight="bold">Target Table:</Text>
-            <TablePickerSynced globalConfigKey="targetTable" />
-        </Box>
-    );
-
-    if (table && table.name.trim() !== "Enrollsy Import") {
-        return (
-            <Box padding={3}>
-                <Text fontWeight="bold" marginBottom={2}>
-                    Upload CSV to Auto-Clean for: {base.name}
-                </Text>
-                {tablePicker}
-                <Text color="red" marginTop={2}>⚠️ Please select the "Enrollsy Import" table to continue.</Text>
-            </Box>
-        );
-    }
 
     const handleFiles = (files) => {
         const file = files[0];
@@ -130,7 +112,7 @@ function AutoUpdateApp({onNavigate}) {
 
             if (!exists) {
                 setMissingStudent({ first, last });
-                alert(`⚠️ Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
+                alert(`Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
                 return;
             }
         }
@@ -159,13 +141,13 @@ function AutoUpdateApp({onNavigate}) {
                 const weekOption = weekOptions.find(opt => opt.name === weekName);
 
                 if (!weekOption) {
-                    console.warn(`⚠️ Week choice "${weekName}" not found in Week# field`);
+                    console.warn(`Week choice "${weekName}" not found in Week# field`);
                     continue;
                 }
 
                 const participantId = await findParticipantRecordId(first, last, participantTable);
                 if (!participantId) {
-                    console.warn(`❌ No matching participant for ${first} ${last}`);
+                    console.warn(`No matching participant for ${first} ${last}`);
                     continue;
                 }
 
@@ -219,7 +201,7 @@ function AutoUpdateApp({onNavigate}) {
             );
 
             if (!match) {
-                console.warn(`⚠️ No matching participant record for ${first} ${last} in ${weekLabel}`);
+                console.warn(`No matching participant record for ${first} ${last} in ${weekLabel}`);
                 continue;
             }
 
@@ -241,7 +223,7 @@ function AutoUpdateApp({onNavigate}) {
 
         }
         setAddedRecordsSummary(summaryList);
-        alert(`✅ Imported ${rowsToImport.length} rows into "${table.name}"`);
+        alert(`Imported ${rowsToImport.length} rows into "${table.name}"`);
     };
 
     const resetUpload = () => {

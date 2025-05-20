@@ -65,7 +65,7 @@ export function InstructionsPage({ onNavigate }) {
                 right={2}
                 zIndex={1}
             >
-                <Text fontSize={1} color="gray">
+                <Text fontSize={1} style={{color: "#cccccc"}}>
                     Created by Ruochen Li, 2025
                 </Text>
             </Box>

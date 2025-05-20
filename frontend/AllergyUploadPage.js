@@ -51,7 +51,7 @@ function AllergyUploadPage({ onNavigate }) {
             skipEmptyLines: true,
             complete: function (results) {
                 setCsvData(results.data);
-                console.log("📥 Loaded allergy CSV:", results.data);
+                console.log("Loaded allergy CSV:", results.data);
             },
         });
     };
