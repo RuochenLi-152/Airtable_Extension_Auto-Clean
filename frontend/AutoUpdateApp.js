@@ -15,8 +15,6 @@ import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from 
 
 function AutoUpdateApp({onNavigate}) {
     const base = useBase();
-    // const globalConfig = useGlobalConfig();
-    // const selectedTableId = globalConfig.get("targetTable");
     const table = base.getTableByIdIfExists("Enrollsy Import");
     const formUrl = `https://airtable.com/appphAT0hdIvIuCsL/pagJLHpFMpnQSpWT1/form`;
 
