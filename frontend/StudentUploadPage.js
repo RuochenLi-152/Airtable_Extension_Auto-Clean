@@ -77,7 +77,6 @@ function StudentUploadPage({ onNavigate }) {
 
     const handleUpload = async () => {
         const studentTable = base.getTableByNameIfExists("Student Basic Info");
-        const airtableFields = studentTable.fields;
     
         const addedStudents = [];
     
@@ -121,9 +120,9 @@ function StudentUploadPage({ onNavigate }) {
         }
     
         if (addedStudents.length > 0) {
-            alert(`✅ Added ${addedStudents.length} student(s):\n- ${addedStudents.join('\n- ')}`);
+            alert(`Added ${addedStudents.length} student(s):\n- ${addedStudents.join('\n- ')}`);
         } else {
-            alert("✅ No new students needed to be added — all exist.");
+            alert("No new students needed to be added — all exist.");
         }
     
         setCsvData([]);

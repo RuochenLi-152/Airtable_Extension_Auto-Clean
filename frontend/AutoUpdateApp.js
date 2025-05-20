@@ -314,7 +314,7 @@ function AutoUpdateApp({onNavigate}) {
                         {addedRecordsSummary.map((record, index) => (
                             <Box key={index} marginTop={1}>
                                 <Text>
-                                    ✅ {record.first} {record.last}
+                                    {record.first} {record.last}
                                     {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
                                     {record.extended && ` (Extended Care added)`}
                                 </Text>

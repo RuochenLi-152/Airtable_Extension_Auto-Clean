@@ -62,14 +62,18 @@ export function Home({ onNavigate }) {
                 </Button>
 
 
-                <Text
+                <Box
                     marginTop={3}
                     fontSize={3}
-                    style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer',  zIndex: 1, position: 'relative'}}
+                    style={{
+                        color: 'blue',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                    }}
                     onClick={() => onNavigate('instructions')}
                 >
                     How to use?
-                </Text>
+                </Box>
             </Box>
         </Box>
     );
