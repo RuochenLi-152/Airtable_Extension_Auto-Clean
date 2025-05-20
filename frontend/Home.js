@@ -14,7 +14,6 @@ export function Home({ onNavigate }) {
                 overflow: 'hidden',
             }}
         >
-            {/* Overlay */}
             <Box
                 position="absolute"
                 top={0}
@@ -25,7 +24,6 @@ export function Home({ onNavigate }) {
                 zIndex={0}
             />
 
-            {/* Main Content */}
             <Box
                 position="relative"
                 zIndex={1}

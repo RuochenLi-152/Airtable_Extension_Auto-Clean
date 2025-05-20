@@ -11,7 +11,7 @@ import Papa from 'papaparse';
 import { formatRowForAirtable } from './helpers/formatRow';
 import { parseCustomDate, getLatestEnrolledTimeFromFirstRow, getWeekNumberFromDate, extractDateAndDay} from './helpers/dateUtils';
 import { splitFullName, studentExists, extractWeekFromClass, findParticipantRecordId } from './helpers/studentUtils';
-import { MissingStudentBanner, FileDropZone, ImportActions} from './components/UIChunks'
+import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from './components/UIChunks'
 
 function AutoUpdateApp({onNavigate}) {
     const base = useBase();
@@ -253,92 +253,93 @@ function AutoUpdateApp({onNavigate}) {
     
 
     return (
-        <Box padding={3}>
+        <BackgroundSet>
+            <Box padding={3}>
+                <Button onClick={() => onNavigate('home')} marginBottom={3}>
+                    ← Back
+                </Button>
 
-            <Button onClick={() => onNavigate('home')} marginBottom={3}>
-                 ← Back
-            </Button>
-
-            <Text fontWeight="bold" marginBottom={4}>
-                Upload Enrollsy .csv file below to auto update student records! 
-            </Text>
-
-    
-            {tablePicker}
-    
-            {!table ? (
-                <Text color="red" marginTop={2}>
-                    ⚠️ No table selected.
+                <Text fontWeight="bold" marginBottom={4}>
+                    Upload Enrollsy .csv file below to auto update student records! 
                 </Text>
-            ) : table.name.trim() !== "Enrollsy Import" ? (
-                <Text color="red" marginTop={2}>
-                    ⚠️ Please select the "Enrollsy Import" table to continue.
-                </Text>
-            ) : (
-                <>
-                    {missingStudent && (
-                        <MissingStudentBanner
-                            student={missingStudent}
-                            formUrl={formUrl}
-                            onClose={() => setMissingStudent(null)}
-                            onNavigate={onNavigate}
-                        />
-                    )}
 
-                    <Box marginBottom={3}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={checkBeforeAdd}
-                                onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
-                                style={{ marginRight: '8px' }}
+        
+                {tablePicker}
+        
+                {!table ? (
+                    <Text color="red" marginTop={2}>
+                        ⚠️ No table selected.
+                    </Text>
+                ) : table.name.trim() !== "Enrollsy Import" ? (
+                    <Text color="red" marginTop={2}>
+                        ⚠️ Please select the "Enrollsy Import" table to continue.
+                    </Text>
+                ) : (
+                    <>
+                        {missingStudent && (
+                            <MissingStudentBanner
+                                student={missingStudent}
+                                formUrl={formUrl}
+                                onClose={() => setMissingStudent(null)}
+                                onNavigate={onNavigate}
                             />
-                            Check & Update Weeks - Slower
-                        </label>
-                    </Box>
+                        )}
 
-
-                    <FileDropZone
-                        isDragging={isDragging}
-                        onClick={() => inputRef.current?.click()}
-                    />
-    
-                    <input
-                        ref={inputRef}
-                        type="file"
-                        accept=".csv"
-                        style={{ display: 'none' }}
-                        onChange={(e) => handleFiles(e.target.files)}
-                    />
-
-    
-                    {filename && (
-                        <ImportActions
-                            filename={filename}
-                            rowCount={csvData.length}
-                            onImport={handleStartImport}
-                            onReset={resetUpload}
-                        />
-                    )}
-                    
-                    {addedRecordsSummary.length > 0 && (
-                        <Box marginTop={3} padding={3} border="default" backgroundColor="#f8f9fa">
-                            <Text fontWeight="bold">Import Summary:</Text>
-                            {addedRecordsSummary.map((record, index) => (
-                                <Box key={index} marginTop={1}>
-                                    <Text>
-                                        ✅ {record.first} {record.last}
-                                        {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
-                                        {record.extended && ` (Extended Care added)`}
-                                    </Text>
-                                </Box>
-                            ))}
+                        <Box marginBottom={3}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={checkBeforeAdd}
+                                    onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
+                                    style={{ marginRight: '8px' }}
+                                />
+                                Check & Update Weeks - Slower
+                            </label>
                         </Box>
-                    )}
-                </>
-            )}
 
-        </Box>
+
+                        <FileDropZone
+                            isDragging={isDragging}
+                            onClick={() => inputRef.current?.click()}
+                        />
+        
+                        <input
+                            ref={inputRef}
+                            type="file"
+                            accept=".csv"
+                            style={{ display: 'none' }}
+                            onChange={(e) => handleFiles(e.target.files)}
+                        />
+
+        
+                        {filename && (
+                            <ImportActions
+                                filename={filename}
+                                rowCount={csvData.length}
+                                onImport={handleStartImport}
+                                onReset={resetUpload}
+                            />
+                        )}
+                        
+                        {addedRecordsSummary.length > 0 && (
+                            <Box marginTop={3} padding={3} border="default" backgroundColor="#f8f9fa">
+                                <Text fontWeight="bold">Import Summary:</Text>
+                                {addedRecordsSummary.map((record, index) => (
+                                    <Box key={index} marginTop={1}>
+                                        <Text>
+                                            ✅ {record.first} {record.last}
+                                            {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
+                                            {record.extended && ` (Extended Care added)`}
+                                        </Text>
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
+                    </>
+                )}
+
+            </Box>
+        </BackgroundSet>
     );
     
 }
