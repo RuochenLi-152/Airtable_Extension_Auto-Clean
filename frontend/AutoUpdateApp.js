@@ -15,9 +15,9 @@ import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from 
 
 function AutoUpdateApp({onNavigate}) {
     const base = useBase();
-    const globalConfig = useGlobalConfig();
-    const selectedTableId = globalConfig.get("targetTable");
-    const table = base.getTableByIdIfExists(selectedTableId);
+    // const globalConfig = useGlobalConfig();
+    // const selectedTableId = globalConfig.get("targetTable");
+    const table = base.getTableByIdIfExists("Enrollsy Import");
     const formUrl = `https://airtable.com/appphAT0hdIvIuCsL/pagJLHpFMpnQSpWT1/form`;
 
     const [csvData, setCsvData] = useState([]);
@@ -259,83 +259,68 @@ function AutoUpdateApp({onNavigate}) {
                     ← Back
                 </Button>
 
-                <Text fontWeight="bold" marginBottom={4}>
-                    Upload Enrollsy .csv file below to auto update student records! 
+                <Text fontWeight="bold" fontSize={4} marginBottom={4} lineHeight={1.6}>
+                    Upload Enrollsy .csv file below to update student schedule
                 </Text>
 
-        
-                {tablePicker}
-        
-                {!table ? (
-                    <Text color="red" marginTop={2}>
-                        ⚠️ No table selected.
-                    </Text>
-                ) : table.name.trim() !== "Enrollsy Import" ? (
-                    <Text color="red" marginTop={2}>
-                        ⚠️ Please select the "Enrollsy Import" table to continue.
-                    </Text>
-                ) : (
-                    <>
-                        {missingStudent && (
-                            <MissingStudentBanner
-                                student={missingStudent}
-                                formUrl={formUrl}
-                                onClose={() => setMissingStudent(null)}
-                                onNavigate={onNavigate}
-                            />
-                        )}
+                {missingStudent && (
+                    <MissingStudentBanner
+                        student={missingStudent}
+                        formUrl={formUrl}
+                        onClose={() => setMissingStudent(null)}
+                        onNavigate={onNavigate}
+                    />
+                )}
 
-                        <Box marginBottom={3}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={checkBeforeAdd}
-                                    onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
-                                    style={{ marginRight: '8px' }}
-                                />
-                                Check & Update Weeks - Slower
-                            </label>
-                        </Box>
-
-
-                        <FileDropZone
-                            isDragging={isDragging}
-                            onClick={() => inputRef.current?.click()}
-                        />
-        
+                <Box marginBottom={3}>
+                    <label>
                         <input
-                            ref={inputRef}
-                            type="file"
-                            accept=".csv"
-                            style={{ display: 'none' }}
-                            onChange={(e) => handleFiles(e.target.files)}
+                            type="checkbox"
+                            checked={checkBeforeAdd}
+                            onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
+                            style={{ marginRight: '8px' }}
                         />
+                        Check & Update Weeks - Slower
+                    </label>
+                </Box>
 
-        
-                        {filename && (
-                            <ImportActions
-                                filename={filename}
-                                rowCount={csvData.length}
-                                onImport={handleStartImport}
-                                onReset={resetUpload}
-                            />
-                        )}
-                        
-                        {addedRecordsSummary.length > 0 && (
-                            <Box marginTop={3} padding={3} border="default" backgroundColor="#f8f9fa">
-                                <Text fontWeight="bold">Import Summary:</Text>
-                                {addedRecordsSummary.map((record, index) => (
-                                    <Box key={index} marginTop={1}>
-                                        <Text>
-                                            ✅ {record.first} {record.last}
-                                            {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
-                                            {record.extended && ` (Extended Care added)`}
-                                        </Text>
-                                    </Box>
-                                ))}
+
+                <FileDropZone
+                    isDragging={isDragging}
+                    onClick={() => inputRef.current?.click()}
+                />
+
+                <input
+                    ref={inputRef}
+                    type="file"
+                    accept=".csv"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleFiles(e.target.files)}
+                />
+
+
+                {filename && (
+                    <ImportActions
+                        filename={filename}
+                        rowCount={csvData.length}
+                        onImport={handleStartImport}
+                        onReset={resetUpload}
+                    />
+                )}
+                
+                {addedRecordsSummary.length > 0 && (
+                    <Box marginTop={3} padding={3} border="default" backgroundColor="#f8f9fa">
+                        <Text fontWeight="bold">Import Summary:</Text>
+                        {addedRecordsSummary.map((record, index) => (
+                            <Box key={index} marginTop={1}>
+                                <Text>
+                                    ✅ {record.first} {record.last}
+                                    {record.weeks.length > 0 && ` added to ${record.weeks.join(', ')}`}
+                                    {record.extended && ` (Extended Care added)`}
+                                </Text>
                             </Box>
-                        )}
-                    </>
+                        ))}
+                    </Box>
                 )}
 
             </Box>
