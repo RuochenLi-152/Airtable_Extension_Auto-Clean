@@ -60,6 +60,16 @@ export function Home({ onNavigate }) {
                 >
                     Add Students
                 </Button>
+
+
+                <Text
+                    marginTop={3}
+                    fontSize={3}
+                    style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer',  zIndex: 1, position: 'relative'}}
+                    onClick={() => onNavigate('instructions')}
+                >
+                    How to use?
+                </Text>
             </Box>
         </Box>
     );
