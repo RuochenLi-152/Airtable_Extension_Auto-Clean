@@ -15,7 +15,7 @@ import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from 
 
 function AutoUpdateApp({onNavigate}) {
     const base = useBase();
-    const table = base.getTableByIdIfExists("Enrollsy Import");
+    const table = base.getTableByNameIfExists("Enrollsy Import");
     const formUrl = `https://airtable.com/appphAT0hdIvIuCsL/pagJLHpFMpnQSpWT1/form`;
 
     const [csvData, setCsvData] = useState([]);
@@ -91,6 +91,7 @@ function AutoUpdateApp({onNavigate}) {
     };
 
     const handleStartImport = async () => {
+        // console.log(table)
         if (!table) return;
         const airtableFields = table.fields;
         const latestEnrolled = await getLatestEnrolledTimeFromFirstRow(table);
@@ -99,12 +100,14 @@ function AutoUpdateApp({onNavigate}) {
 
         const rowsToImport = csvData.filter(row => {
             const parsed = parseCustomDate(row['Enrolled']);
+            console.log(parsed);
             return parsed && (!latestEnrolled || parsed > latestEnrolled);
         });
 
         // Step 1: Check that all students exist before inserting anything
         for (let row of rowsToImport) {
             const { first, last } = splitFullName(row['Student']);
+            console.log(first + last);
 
             const exists = await studentExists(first, last, studentTable);
 
@@ -159,6 +162,7 @@ function AutoUpdateApp({onNavigate}) {
 
                 if (exists) {
                     console.log(`Core Time already exists for ${first} ${last} in ${weekName}`);
+                    alert(`Core Time already exists for ${first} ${last} in ${weekName}`);
                     continue;
                 }
 
