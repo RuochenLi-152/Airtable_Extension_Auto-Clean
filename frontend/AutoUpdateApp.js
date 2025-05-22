@@ -22,7 +22,7 @@ function AutoUpdateApp({onNavigate}) {
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [missingStudent, setMissingStudent] = useState(null);
-    const [checkBeforeAdd, setCheckBeforeAdd] = useState(false);
+    const [checkBeforeAdd, setCheckBeforeAdd] = useState(true);
     const [addedRecordsSummary, setAddedRecordsSummary] = useState([]);
 
 
@@ -264,7 +264,7 @@ function AutoUpdateApp({onNavigate}) {
                             onChange={() => setCheckBeforeAdd(!checkBeforeAdd)}
                             style={{ marginRight: '8px' }}
                         />
-                        Check & Update Weeks - Slower
+                        Check & Update Weeks (Slower but recommended)
                     </label>
                 </Box>
 
