@@ -8,12 +8,18 @@ import { InstructionsPage } from './InstructionsPage';
 
 function App() {
     const [view, setView] = useState('home');
+    const [csvDataForSchedule, setCsvDataForSchedule] = useState([]);
+
 
     if (view === 'auto-update') {
-        return <AutoUpdateApp onNavigate={setView} />;
+        return <AutoUpdateApp 
+        onNavigate={setView}
+        externalCsvDataForSchedule={csvDataForSchedule} />;
     }
     if (view === 'add-student') {
-        return <StudentUploadPage onNavigate={setView} />;
+        return <StudentUploadPage 
+            onNavigate={setView} 
+            setCsvDataForSchedule={setCsvDataForSchedule}/>
     }
     if (view === 'instructions') {
         return <InstructionsPage onNavigate={setView} />;

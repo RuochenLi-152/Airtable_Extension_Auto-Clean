@@ -14,7 +14,7 @@ import { parseCustomDate, getLatestEnrolledTimeFromFirstRow, getWeekNumberFromDa
 import { splitFullName, studentExists, extractWeekFromClass, findParticipantRecordId } from './helpers/studentUtils';
 import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from './components/UIChunks'
 
-function AutoUpdateApp({onNavigate}) {
+function AutoUpdateApp({onNavigate, externalCsvData}) {
     const base = useBase();
     const table = base.getTableByNameIfExists("Enrollsy Import");
     const formUrl = `https://airtable.com/appphAT0hdIvIuCsL/pagJLHpFMpnQSpWT1/form`;
@@ -59,6 +59,12 @@ function AutoUpdateApp({onNavigate}) {
             window.removeEventListener('dragleave', handleDragLeave);
         };
     }, []);
+    useEffect(() => {
+        if (externalCsvData?.length > 0){
+            setCsvData(externalCsvData);
+            setFilename(externalCsvData.name);
+        }
+    }, [externalCsvData]);
 
 
     const handleFiles = (files) => {

@@ -5,13 +5,15 @@ import { FileDropZone, ImportActions, BackgroundSet } from './components/UIChunk
 import { splitFullName, studentExists } from './helpers/studentUtils';
 import { parseDOB } from './helpers/dateUtils';
 
-function StudentUploadPage({ onNavigate }) {
+function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
     const base = useBase();
 
     const [csvData, setCsvData] = useState([]);
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [newStudent, setNewStudent] = useState(false);
+    const [promptToSchedule, setPromptToSchedule] = useState(false);
     const inputRef = useRef();
 
     // Drag-drop ezone
@@ -78,6 +80,7 @@ function StudentUploadPage({ onNavigate }) {
 
     const handleUpload = async () => {
         setIsLoading(true);
+
         try {
             const studentTable = base.getTableByNameIfExists("Student Basic Info");
             const addedStudents = [];
@@ -123,10 +126,11 @@ function StudentUploadPage({ onNavigate }) {
         
             if (addedStudents.length > 0) {
                 alert(`Added ${addedStudents.length} student(s):\n- ${addedStudents.join('\n- ')}`);
+                setNewStudent(true)
             } else {
                 alert("No new students needed to be added — all exist.");
             }
-        
+            setPromptToSchedule(true);
             setCsvData([]);
             setFilename('');
             
@@ -160,6 +164,27 @@ function StudentUploadPage({ onNavigate }) {
                         <Loader scale={0.5} />
                     </Box>
                 )}
+
+                {promptToSchedule && (
+                    <Box marginTop={3}>
+                        {newStudent ? (
+                            <Text>Want to add schedule info for newly added students?</Text>
+                        ) : (
+                            <Text>No new student added, do you want to update student schedule instead?</Text>
+                        )}
+                        <Button
+                            marginTop={2}
+                            variant="primary"
+                            onClick={() => {
+                                setCsvDataForSchedule(csvData); 
+                                onNavigate('auto-update'); 
+                            }}
+                        >
+                            ➕ Add Schedule Info
+                        </Button>
+                    </Box>
+                )}
+
 
                 <FileDropZone
                     isDragging={isDragging}
