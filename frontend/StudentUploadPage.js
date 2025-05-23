@@ -36,7 +36,6 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
         setIsDragging(false);
     };
 
-    // listeners
     useEffect(() => {
         window.addEventListener('dragover', handleDragOver);
         window.addEventListener('drop', handleDrop);
@@ -174,13 +173,14 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
                         )}
                         <Button
                             marginTop={2}
+                            marginBottom={2}
                             variant="primary"
                             onClick={() => {
                                 setCsvDataForSchedule(csvData); 
                                 onNavigate('auto-update'); 
                             }}
                         >
-                            ➕ Add Schedule Info
+                            Add Schedule Info
                         </Button>
                     </Box>
                 )}

@@ -24,7 +24,7 @@ export function MissingStudentBanner({ student, onClose, formUrl, onNavigate }) 
                         fontWeight: 'bold',
                     }}
                 >
-                    ➕ Open Student Form
+                    Open Student Form
                 </a>
             </Box>
             
@@ -32,7 +32,7 @@ export function MissingStudentBanner({ student, onClose, formUrl, onNavigate }) 
                     variant="secondary"
                     onClick={() => onNavigate && onNavigate('add-student')}
                 >
-                    ➕ Add via Upload
+                    Add via Upload
                 </Button>
 
             <Button variant="primary" marginTop={3} onClick={onClose}>
