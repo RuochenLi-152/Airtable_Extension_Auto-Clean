@@ -134,7 +134,7 @@ function StudentUploadPage({ onNavigate }) {
             console.error("Error during import:", error);
             alert("An error occurred. Check the console for details.");
         } finally {
-            setIsLoading(true);
+            setIsLoading(false);
         }
         
     };
