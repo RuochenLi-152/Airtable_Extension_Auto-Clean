@@ -91,9 +91,6 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
     }, [externalCsvDataForSchedule]);
     
 
-    console.log(filename);
-    console.log(`DATA IS ${csvData}`);
-
     const handleFiles = (files) => {
         const file = files[0];
         if (!file || !file.name.endsWith('.csv')) return;
