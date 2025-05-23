@@ -8,7 +8,7 @@ import { InstructionsPage } from './InstructionsPage';
 
 function App() {
     const [view, setView] = useState('home');
-    const [csvDataForSchedule, setCsvDataForSchedule] = useState([]);
+    const [csvDataForSchedule, setCsvDataForSchedule] = useState({ data: [], filename: '' });
 
 
     if (view === 'auto-update') {

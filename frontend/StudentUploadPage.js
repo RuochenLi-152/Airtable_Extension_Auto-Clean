@@ -10,6 +10,8 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
 
     const [csvData, setCsvData] = useState([]);
     const [filename, setFilename] = useState('');
+    const [csvFile, setCsvFile] = useState(null); 
+
     const [isDragging, setIsDragging] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [newStudent, setNewStudent] = useState(false);
@@ -52,6 +54,7 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
         if (!file || !file.name.endsWith('.csv')) return;
 
         setFilename(file.name);
+        setCsvFile(file);
 
         Papa.parse(file, {
             header: true,
@@ -130,8 +133,6 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
                 alert("No new students needed to be added — all exist.");
             }
             setPromptToSchedule(true);
-            setCsvData([]);
-            setFilename('');
             
         } catch (error) {
             console.error("Error during import:", error);
@@ -148,7 +149,10 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
             <Button
                 margin={3}
                 variant="default"
-                onClick={() => onNavigate('home')}
+                onClick={() => {
+                    onNavigate('home');
+                    setCsvFile(null);}}
+                
             >
                 ← Back
             </Button>
@@ -176,8 +180,10 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
                             marginBottom={2}
                             variant="primary"
                             onClick={() => {
-                                setCsvDataForSchedule(csvData); 
+                                console.log(csvFile);
+                                setCsvDataForSchedule(csvFile);
                                 onNavigate('auto-update'); 
+                                
                             }}
                         >
                             Add Schedule Info

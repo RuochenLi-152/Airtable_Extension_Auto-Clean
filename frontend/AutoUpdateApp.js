@@ -59,12 +59,37 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
             window.removeEventListener('dragleave', handleDragLeave);
         };
     }, []);
+
     useEffect(() => {
-        if (externalCsvDataForSchedule?.length > 0){
-            setCsvData(externalCsvDataForSchedule);
-            setFilename(externalCsvDataForSchedule.name);
-        }
+        if (!externalCsvDataForSchedule) return;
+    
+        setFilename(externalCsvDataForSchedule.name);
+    
+        Papa.parse(externalCsvDataForSchedule, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                const cleanedData = [];
+                let lastStudent = '';
+                let lastEnrolled = '';
+    
+                for (let row of results.data) {
+                    const currentStudent = row['Student']?.trim();
+                    if (currentStudent) lastStudent = currentStudent;
+                    else row['Student'] = lastStudent;
+    
+                    const currentEnrolled = row['Enrolled']?.trim();
+                    if (currentEnrolled) lastEnrolled = currentEnrolled;
+                    else row['Enrolled'] = lastEnrolled;
+    
+                    if (row['Student']) cleanedData.push(row);
+                }
+    
+                setCsvData(cleanedData);
+            },
+        });
     }, [externalCsvDataForSchedule]);
+    
 
     console.log(filename);
     console.log(`DATA IS ${csvData}`);
