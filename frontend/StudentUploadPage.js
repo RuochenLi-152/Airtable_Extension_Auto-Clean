@@ -75,7 +75,7 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
                     });
         
                 setCsvData(cleanedData);
-                console.log("📥 Loaded student CSV:", cleanedData);
+                console.log("Loaded student CSV:", cleanedData);
             },
         });         
     };
