@@ -60,18 +60,24 @@ function StudentUploadPage({ onNavigate, setCsvDataForSchedule }) {
             header: true,
             skipEmptyLines: true,
             complete: function (results) {
-                const validRows = results.data.filter(
-                    row =>
-                        row['Student'] &&
-                        row['Student'] !== 'Student' &&
-                        row['Birth Date'] !== 'Birth Date'
-                );
+                const cleanedData = results.data
+                    .filter(row => row['Student'] && row['Student'] !== 'Student')
+                    .map(row => {
+                        const normalizedRow = {};
+                        for (let key in row) {
+                            if (row.hasOwnProperty(key)) {
+                                const trimmedKey = key.trim();
+                                const trimmedValue = typeof row[key] === 'string' ? row[key].trim() : row[key];
+                                normalizedRow[trimmedKey] = trimmedValue;
+                            }
+                        }
+                        return normalizedRow;
+                    });
         
-                setCsvData(validRows);
-                console.log("📥 Loaded student CSV:", validRows);
+                setCsvData(cleanedData);
+                console.log("📥 Loaded student CSV:", cleanedData);
             },
-        });
-        
+        });         
     };
 
     const resetUpload = () => {
