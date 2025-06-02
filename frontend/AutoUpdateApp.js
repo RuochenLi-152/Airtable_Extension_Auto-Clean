@@ -257,7 +257,6 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
                     });
                 }
                 setAddedRecordsSummary(summaryList);
-                alert(`Updated ${summaryList.length} records into database`);
             }
             
         } catch (error) {
@@ -265,6 +264,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
             alert("An error occurred. Check the console for details.");
         } finally {
             setIsLoading(false); 
+            alert(`Updated ${summaryList.length} records into database`);
         }
     };
 
