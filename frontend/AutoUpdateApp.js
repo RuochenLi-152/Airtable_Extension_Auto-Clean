@@ -167,6 +167,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
 
             // First pass: Handle all "Core Time" rows
             for (let row of rowsToImport) {
+                if (!row['Student']) continue;
                 const classText = row['Class'] || '';
                 const weekName = extractWeekFromClass(classText);
 

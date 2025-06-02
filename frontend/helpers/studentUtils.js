@@ -1,7 +1,8 @@
 // Split "Last, First" into separate fields
 export function splitFullName(fullName) {
-    if (!fullName.includes(',')) return { first: '', last: '' };
-
+    if (typeof fullName !== 'string' || !fullName.includes(',')) {
+        return { first: '', last: '' };
+    }
     const [last, first] = fullName.split(',').map(str => str.trim());
     return { first, last };
 }
