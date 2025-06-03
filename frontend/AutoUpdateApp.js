@@ -124,12 +124,12 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
 
     const handleStartImport = async () => {
         setIsLoading(true);
+        const summaryList = [];
         try {
             if (!table) return;
             const airtableFields = table.fields;
             const latestEnrolled = await getLatestEnrolledTimeFromFirstRow(table);
             const studentTable = base.getTableByNameIfExists('Student Basic Info');
-            const summaryList = [];
 
             const rowsToImport = csvData.filter(row => {
                 const parsed = parseCustomDate(row['Enrolled']);
