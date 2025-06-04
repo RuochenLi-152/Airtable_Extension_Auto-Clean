@@ -53,12 +53,22 @@ export function Home({ onNavigate }) {
                     Update Schedule
                 </Button>
 
+
                 <Button
                     variant="default"
                     size="large"
+                    marginBottom={3}
                     onClick={() => onNavigate('add-student')}
                 >
                     Add Students
+                </Button>
+
+                <Button
+                    variant="default"
+                    size="large"
+                    onClick={() => onNavigate('email-helper')}
+                >
+                    Email Helper
                 </Button>
 
 

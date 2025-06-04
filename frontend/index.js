@@ -4,6 +4,7 @@ import StudentUploadPage from './StudentUploadPage';
 import {Home} from './Home';
 import React, { useState } from 'react';
 import { InstructionsPage } from './InstructionsPage';
+import EmailHelperPage from './EmailHelperPage';
 
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
     }
     if (view === 'instructions') {
         return <InstructionsPage onNavigate={setView} />;
+    }
+    if (view === 'email-helper') {
+        return <EmailHelperPage onNavigate={setView} />;
     }
 
     return <Home onNavigate={setView} />;
