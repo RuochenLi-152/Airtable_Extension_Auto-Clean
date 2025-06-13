@@ -50,6 +50,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
         setIsDragging(false);
     };
 
+    // Event Listeners for User interactions
     useEffect(() => {
         window.addEventListener('dragover', handleDragOver);
         window.addEventListener('drop', handleDrop);
@@ -61,6 +62,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
         };
     }, []);
 
+    // Event handler for csv file cleaning
     useEffect(() => {
         if (!externalCsvDataForSchedule) return;
     
@@ -91,7 +93,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
         });
     }, [externalCsvDataForSchedule]);
     
-
+    // Function to covert the cleaned csv file data into object
     const handleFiles = (files) => {
         const file = files[0];
         if (!file || !file.name.endsWith('.csv')) return;
@@ -123,6 +125,10 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
         });
     };
 
+    /* Main function for handling import:
+    1. Find the corresponding student records in the basic info pool based on the csv data
+    2. Create new records/
+    */
     const handleStartImport = async () => {
         setIsLoading(true);
         const summaryList = [];
@@ -134,7 +140,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
 
             const rowsToImport = csvData.filter(row => {
                 const parsed = parseCustomDate(row['Enrolled']);
-                console.log(parsed);
+                // console.log(parsed);
                 return parsed && (!latestEnrolled || parsed > latestEnrolled);
             });
 
@@ -147,7 +153,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
 
                 if (!exists) {
                     setMissingStudent({ first, last });
-                    alert(`Student "${first} ${last}" not found.\nPlease go to Forms and create their record first.`);
+                    alert(`Student "${first} ${last}" not found.\nYou can use the 'Add Student' page to create their record first.`);
                     return;
                 }
             }
