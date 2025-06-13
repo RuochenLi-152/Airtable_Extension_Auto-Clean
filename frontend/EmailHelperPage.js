@@ -1,4 +1,5 @@
-/* Add health form email address generator
+/* ALERT - NOT FINISHED
+Add health form email address generator
 
 2 options - all emails or health form needs update emails
 if choose all emails - prompt user to choose a table, and then choose a field/fields to

@@ -15,10 +15,12 @@ import { splitFullName, studentExists, extractWeekFromClass, findParticipantReco
 import { MissingStudentBanner, FileDropZone, ImportActions, BackgroundSet} from './components/UIChunks'
 
 function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
+    // Airtable Block CLi hooks & declaration
     const base = useBase();
     const table = base.getTableByNameIfExists("Enrollsy Import");
     const formUrl = `https://airtable.com/appphAT0hdIvIuCsL/pagJLHpFMpnQSpWT1/form`;
 
+    // React hooks declaration
     const [csvData, setCsvData] = useState([]);
     const [filename, setFilename] = useState('');
     const [isDragging, setIsDragging] = useState(false);
@@ -26,10 +28,9 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
     const [checkBeforeAdd, setCheckBeforeAdd] = useState(true);
     const [addedRecordsSummary, setAddedRecordsSummary] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
-
     const inputRef = useRef();
 
+    // React Event handlers
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
