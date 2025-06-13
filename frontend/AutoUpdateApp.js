@@ -127,7 +127,9 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
 
     /* Main function for handling import:
     1. Find the corresponding student records in the basic info pool based on the csv data
-    2. Create new records/
+    2. Create new records/update existing records for the summer camp program
+    3. Based on the nature of the enrollment (Core Time/Extended Care), update the student records differently
+    4. Print out a summary to user
     */
     const handleStartImport = async () => {
         setIsLoading(true);
@@ -275,6 +277,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
         }
     };
 
+    // Reset all uploaded file and referred file
     const resetUpload = () => {
         setCsvData([]);
         setFilename('');
@@ -282,7 +285,7 @@ function AutoUpdateApp({onNavigate, externalCsvDataForSchedule}) {
     };
 
     
-
+    // UI Layout render in JSX
     return (
         <BackgroundSet>
             <Box padding={3}>
